@@ -1,0 +1,29 @@
+const int clapSensorPin = 2; 
+const int ledPin = 13; 
+int clapCount = 0;
+unsigned long lastClapTime = 0;
+const unsigned long clapInterval = 500; 
+
+void setup() {
+  pinMode(clapSensorPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  digitalWrite(ledPin, LOW);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int sensorValue = digitalRead(clapSensorPin);
+  
+  if (sensorValue == HIGH) {
+    unsigned long currentTime = millis();
+    if (currentTime - lastClapTime > clapInterval) {
+      clapCount++;
+      lastClapTime = currentTime;
+      Serial.println("Clap detected!");
+      digitalWrite(ledPin, !digitalRead(ledPin));
+    }
+  }
+  if (millis() - lastClapTime > 1 * clapInterval) {
+    clapCount = 0;
+  }
+}
